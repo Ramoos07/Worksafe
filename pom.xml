@@ -20,7 +20,6 @@
     </properties>
 
     <dependencies>
-        <!-- PostgreSQL JDBC Driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
