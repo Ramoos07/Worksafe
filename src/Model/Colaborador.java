@@ -1,22 +1,33 @@
 package Model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Colaborador {
-    private int idColaborador;
+
+    private Long idColaborador;
     private String nome;
     private String cpf;
-    private Date dataNascimento;
-    private Date dataAdmissao;
+    private LocalDate dataNascimento;
+    private LocalDate dataAdmissao;
     private String status;
-    private int idEmpresa;
-    private int idCargo;
+    private Long idEmpresa;
+    private Long idCargo;
+
+    public Colaborador(Long idColaborador, String nome, String cpf) {
+
+        this.idColaborador = idColaborador;
+        this.nome = nome;
+        this.cpf = cpf;
+
+    }
 
     public Colaborador() {
     }
 
-    public Colaborador(int idColaborador, String nome, String cpf, Date dataNascimento,
-                       Date dataAdmissao, String status, int idEmpresa, int idCargo) {
+    public Colaborador(Long idColaborador, String nome, String cpf,
+                       LocalDate dataNascimento, LocalDate dataAdmissao,
+                       String status, Long idEmpresa, Long idCargo) {
+
         this.idColaborador = idColaborador;
         this.nome = nome;
         this.cpf = cpf;
@@ -27,17 +38,18 @@ public class Colaborador {
         this.idCargo = idCargo;
     }
 
-
-    public int getIdColaborador() {
+    public Long getIdColaborador() {
         return idColaborador;
     }
-    public void setIdColaborador(int idColaborador) {
+
+    public void setIdColaborador(Long idColaborador) {
         this.idColaborador = idColaborador;
     }
 
     public String getNome() {
         return nome;
     }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -45,42 +57,48 @@ public class Colaborador {
     public String getCpf() {
         return cpf;
     }
+
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
-    public Date getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
-    public void setDataNascimento(Date dataNascimento) {
+
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 
-    public Date getDataAdmissao() {
+    public LocalDate getDataAdmissao() {
         return dataAdmissao;
     }
-    public void setDataAdmissao(Date dataAdmissao) {
+
+    public void setDataAdmissao(LocalDate dataAdmissao) {
         this.dataAdmissao = dataAdmissao;
     }
 
     public String getStatus() {
         return status;
     }
+
     public void setStatus(String status) {
         this.status = status;
     }
 
-    public int getIdEmpresa() {
+    public Long getIdEmpresa() {
         return idEmpresa;
     }
-    public void setIdEmpresa(int idEmpresa) {
+
+    public void setIdEmpresa(Long idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 
-    public int getIdCargo() {
+    public Long getIdCargo() {
         return idCargo;
     }
-    public void setIdCargo(int idCargo) {
+
+    public void setIdCargo(Long idCargo) {
         this.idCargo = idCargo;
     }
 }

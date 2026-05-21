@@ -1,85 +1,87 @@
 package Model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class Aso {
-    private int idAso;
-    private int idColaborador;
-    private int idMedico;
+
+    private Long idAso;
+    private LocalDate dataEmissao;
+    private LocalDate dataVencimento;
     private String tipoAso;
-    private Date dataEmissaoAso;
-    private Date dataValidade;
-    private String resultadoAso;
-    private String observacaoAso;
+    private String resultado;
+    private Long idColaborador;
+    private Long idMedico;
 
     public Aso() {
     }
 
-    public Aso(int idAso, int idColaborador, int idMedico, String tipoAso,
-               Date dataEmissaoAso, Date dataValidade, String resultadoAso, String observacaoAso) {
+    public Aso(Long idAso, LocalDate dataEmissao,
+               LocalDate dataVencimento, String tipoAso,
+               String resultado, Long idColaborador,
+               Long idMedico) {
+
         this.idAso = idAso;
+        this.dataEmissao = dataEmissao;
+        this.dataVencimento = dataVencimento;
+        this.tipoAso = tipoAso;
+        this.resultado = resultado;
         this.idColaborador = idColaborador;
         this.idMedico = idMedico;
-        this.tipoAso = tipoAso;
-        this.dataEmissaoAso = dataEmissaoAso;
-        this.dataValidade = dataValidade;
-        this.resultadoAso = resultadoAso;
-        this.observacaoAso = observacaoAso;
     }
 
-    public int getIdAso() {
+    public Long getIdAso() {
         return idAso;
     }
-    public void setIdAso(int idAso) {
+
+    public void setIdAso(Long idAso) {
         this.idAso = idAso;
     }
 
-    public int getIdColaborador() {
-        return idColaborador;
-    }
-    public void setIdColaborador(int idColaborador) {
-        this.idColaborador = idColaborador;
+    public LocalDate getDataEmissao() {
+        return dataEmissao;
     }
 
-    public int getIdMedico() {
-        return idMedico;
+    public void setDataEmissao(LocalDate dataEmissao) {
+        this.dataEmissao = dataEmissao;
     }
-    public void setIdMedico(int idMedico) {
-        this.idMedico = idMedico;
+
+    public LocalDate getDataVencimento() {
+        return dataVencimento;
+    }
+
+    public void setDataVencimento(LocalDate dataVencimento) {
+        this.dataVencimento = dataVencimento;
     }
 
     public String getTipoAso() {
         return tipoAso;
     }
+
     public void setTipoAso(String tipoAso) {
         this.tipoAso = tipoAso;
     }
 
-    public Date getDataEmissaoAso() {
-        return dataEmissaoAso;
-    }
-    public void setDataEmissaoAso(Date dataEmissaoAso) {
-        this.dataEmissaoAso = dataEmissaoAso;
+    public String getResultado() {
+        return resultado;
     }
 
-    public Date getDataValidade() {
-        return dataValidade;
-    }
-    public void setDataValidade(Date dataValidade) {
-        this.dataValidade = dataValidade;
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
     }
 
-    public String getResultadoAso() {
-        return resultadoAso;
-    }
-    public void setResultadoAso(String resultadoAso) {
-        this.resultadoAso = resultadoAso;
+    public Long getIdColaborador() {
+        return idColaborador;
     }
 
-    public String getObservacaoAso() {
-        return observacaoAso;
+    public void setIdColaborador(Long idColaborador) {
+        this.idColaborador = idColaborador;
     }
-    public void setObservacaoAso(String observacaoAso) {
-        this.observacaoAso = observacaoAso;
+
+    public Long getIdMedico() {
+        return idMedico;
+    }
+
+    public void setIdMedico(Long idMedico) {
+        this.idMedico = idMedico;
     }
 }
