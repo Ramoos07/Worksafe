@@ -7,33 +7,62 @@ import java.sql.SQLException;
 public class Conexao {
 
     private static Conexao instance;
-    public final Connection conexao;
-    private final String    url =
+    private Connection conexao;
+
+    private static final String URL =
             "jdbc:postgresql://db.bvppxnzbndjmbysrygxt.supabase.co:5432/postgres?sslmode=require";
-    private final String user = "postgres";
-    private final String password = "projetobancodedados";
+
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "projetobancodedados";
 
     private Conexao() {
-
-        try {
-
-            this.conexao =
-                    DriverManager.getConnection(url, user, password);
-
-        } catch (SQLException ex) {
-
-            throw new RuntimeException("Erro ao conectar: "+ ex.getMessage());
-        }
+        conectar();
     }
 
-    public static Conexao getInstance() {
+    public static synchronized Conexao getInstance() {
         if (instance == null) {
             instance = new Conexao();
         }
         return instance;
     }
 
-    public Connection conexao() {
+    private void conectar() {
+        try {
+
+            if (conexao == null || conexao.isClosed()) {
+                conexao = DriverManager.getConnection(URL, USER, PASSWORD);
+            }
+
+        } catch (SQLException ex) {
+            throw new RuntimeException("Erro ao conectar com banco: " + ex.getMessage(), ex);
+        }
+    }
+
+    public Connection getConexao() {
+
+        try {
+
+            if (conexao == null || conexao.isClosed()) {
+                conectar();
+            }
+
+        } catch (SQLException ex) {
+            throw new RuntimeException("Erro ao validar conexão: " + ex.getMessage(), ex);
+        }
+
         return conexao;
+    }
+
+    public void fecharConexao() {
+
+        try {
+
+            if (conexao != null && !conexao.isClosed()) {
+                conexao.close();
+            }
+
+        } catch (SQLException ex) {
+            throw new RuntimeException("Erro ao fechar conexão: " + ex.getMessage(), ex);
+        }
     }
 }
