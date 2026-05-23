@@ -1,5 +1,6 @@
 package DAO;
 
+import Connection.Conexao;
 import Model.Colaborador;
 
 import java.sql.*;
@@ -10,8 +11,10 @@ public class ColaboradorDAO {
 
     private final Connection connection;
 
-    public ColaboradorDAO(Connection connection) {
-        this.connection = connection;
+    public ColaboradorDAO() {
+        this.connection = Conexao
+                .getInstance()
+                .getConexao();
     }
 
     public void inserir(Colaborador colaborador) {
@@ -35,10 +38,12 @@ public class ColaboradorDAO {
 
             stmt.executeUpdate();
 
-            System.out.println("Colaborador inserido com sucesso!");
+            System.out.println(
+                    "Colaborador inserido com sucesso!");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException("Erro ao inserir colaborador: " + e.getMessage(), e);
         }
     }
 
@@ -72,80 +77,70 @@ public class ColaboradorDAO {
             System.out.println("Colaborador atualizado com sucesso!");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Erro ao atualizar colaborador: "
+                            + e.getMessage(), e);
         }
     }
 
-    public void atualizarStatus(Colaborador colaborador) {
+    public void atualizarStatus(String cpf, String status) {
 
         String sql = """
                 UPDATE colaborador
-                SET status = ?,
-                WHERE cpf = ?,
+                SET status = ?
+                WHERE cpf = ?
                 """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-
-            stmt.setString(1, colaborador.getStatus());
-            stmt.setString(2, colaborador.getCpf());
-
+            stmt.setString(1, status);
+            stmt.setString(2, cpf);
             stmt.executeUpdate();
-
-            System.out.println("Colaborador atualizado com sucesso!");
+            System.out.println("Status atualizado com sucesso!");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException("Erro ao atualizar status: " + e.getMessage(), e);
         }
     }
 
     public void deletar(String cpf) {
 
-        String sql = "DELETE FROM colaborador WHERE cpf = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
-            stmt.setString(1,cpf);
-
-            stmt.executeUpdate();
-
-            System.out.println("Colaborador deletado com sucesso!");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Colaborador buscarPorCpf(String cpf) {
-
-        String sql = "SELECT * FROM colaborador WHERE cpf = ?";
+        String sql =
+                "DELETE FROM colaborador WHERE cpf = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, cpf);
 
-            ResultSet rs = stmt.executeQuery();
+            stmt.executeUpdate();
 
-            if (rs.next()) {
+            System.out.println("Colaborador deletado com sucesso!");
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao deletar colaborador: "+ e.getMessage(), e);
+        }
+    }
 
-                Colaborador colaborador = new Colaborador();
+    public Colaborador buscarPorCpf(String cpf) {
 
-                colaborador.setIdColaborador(rs.getLong("id_colaborador"));
-                colaborador.setNome(rs.getString("nome"));
-                colaborador.setCpf(rs.getString("cpf"));
-                colaborador.setDataNascimento(
-                        rs.getDate("data_nascimento").toLocalDate());
-                colaborador.setDataAdmissao(
-                        rs.getDate("data_admissao").toLocalDate());
-                colaborador.setStatus(rs.getString("status"));
-                colaborador.setIdEmpresa(rs.getLong("id_empresa"));
-                colaborador.setIdCargo(rs.getLong("id_cargo"));
+        String sql =
+                "SELECT * FROM colaborador WHERE cpf = ?";
 
-                return colaborador;
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, cpf);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return mapearColaborador(rs);
+                }
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException("Erro ao buscar colaborador: " + e.getMessage(), e);
         }
 
         return null;
@@ -155,7 +150,8 @@ public class ColaboradorDAO {
 
         List<Colaborador> lista = new ArrayList<>();
 
-        String sql = "SELECT id_colaborador, nome, cpf FROM colaborador";
+        String sql =
+                "SELECT id_colaborador, nome, cpf FROM colaborador";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -167,14 +163,28 @@ public class ColaboradorDAO {
                 colaborador.setIdColaborador(rs.getLong("id_colaborador"));
                 colaborador.setNome(rs.getString("nome"));
                 colaborador.setCpf(rs.getString("cpf"));
-
                 lista.add(colaborador);
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
+            throw new RuntimeException("Erro ao listar colaboradores: "+ e.getMessage(), e);
+        }
         return lista;
+    }
+
+    private Colaborador mapearColaborador(ResultSet rs) throws SQLException {
+
+        Colaborador colaborador = new Colaborador();
+
+        colaborador.setIdColaborador(rs.getLong("id_colaborador"));
+        colaborador.setNome(rs.getString("nome"));
+        colaborador.setCpf(rs.getString("cpf"));
+        colaborador.setDataNascimento(rs.getDate("data_nascimento").toLocalDate());
+        colaborador.setDataAdmissao(rs.getDate("data_admissao").toLocalDate());
+        colaborador.setStatus(rs.getString("status"));
+        colaborador.setIdEmpresa(rs.getLong("id_empresa"));
+        colaborador.setIdCargo(rs.getLong("id_cargo"));
+        return colaborador;
     }
 }

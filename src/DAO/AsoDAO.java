@@ -1,5 +1,6 @@
 package DAO;
 
+import Connection.Conexao;
 import Model.Aso;
 
 import java.sql.*;
@@ -10,8 +11,10 @@ public class AsoDAO {
 
     private final Connection connection;
 
-    public AsoDAO(Connection connection) {
-        this.connection = connection;
+    public AsoDAO() {
+        this.connection = Conexao
+                .getInstance()
+                .getConexao();
     }
 
     public void inserir(Aso aso) {
@@ -37,7 +40,9 @@ public class AsoDAO {
             System.out.println("ASO inserido com sucesso!");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Erro ao inserir ASO: " + e.getMessage(), e);
         }
     }
 
@@ -69,29 +74,33 @@ public class AsoDAO {
             System.out.println("ASO atualizado com sucesso!");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Erro ao atualizar ASO: " + e.getMessage(), e);
         }
     }
 
-    public void atualizarResultado(Aso aso) {
+    public void atualizarResultado(Long idAso, String resultado) {
 
         String sql = """
                 UPDATE aso
-                SET resultado = ?,
+                SET resultado = ?
                 WHERE id_aso = ?
                 """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            stmt.setString(1, aso.getResultado());
-            stmt.setLong(2, aso.getIdAso());
+            stmt.setString(1, resultado);
+            stmt.setLong(2, idAso);
 
             stmt.executeUpdate();
 
-            System.out.println("ASO atualizado com sucesso!");
+            System.out.println("Resultado atualizado com sucesso!");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Erro ao atualizar resultado: " + e.getMessage(), e);
         }
     }
 
@@ -108,7 +117,9 @@ public class AsoDAO {
             System.out.println("ASO deletado com sucesso!");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Erro ao deletar ASO: " + e.getMessage(), e);
         }
     }
 
@@ -120,27 +131,17 @@ public class AsoDAO {
 
             stmt.setLong(1, id);
 
-            ResultSet rs = stmt.executeQuery();
+            try (ResultSet rs = stmt.executeQuery()) {
 
-            if (rs.next()) {
-
-                Aso aso = new Aso();
-
-                aso.setIdAso(rs.getLong("id_aso"));
-                aso.setDataEmissao(
-                        rs.getDate("data_emissao").toLocalDate());
-                aso.setDataVencimento(
-                        rs.getDate("data_vencimento").toLocalDate());
-                aso.setTipoAso(rs.getString("tipo_aso"));
-                aso.setResultado(rs.getString("resultado"));
-                aso.setIdColaborador(rs.getLong("id_colaborador"));
-                aso.setIdMedico(rs.getLong("id_medico"));
-
-                return aso;
+                if (rs.next()) {
+                    return mapearAso(rs);
+                }
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Erro ao buscar ASO: " + e.getMessage(), e);
         }
 
         return null;
@@ -156,26 +157,34 @@ public class AsoDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-
-                Aso aso = new Aso();
-
-                aso.setIdAso(rs.getLong("id_aso"));
-                aso.setDataEmissao(
-                        rs.getDate("data_emissao").toLocalDate());
-                aso.setDataVencimento(
-                        rs.getDate("data_vencimento").toLocalDate());
-                aso.setTipoAso(rs.getString("tipo_aso"));
-                aso.setResultado(rs.getString("resultado"));
-                aso.setIdColaborador(rs.getLong("id_colaborador"));
-                aso.setIdMedico(rs.getLong("id_medico"));
-
-                lista.add(aso);
+                lista.add(mapearAso(rs));
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Erro ao listar ASOs: " + e.getMessage(), e);
         }
 
         return lista;
+    }
+
+    private Aso mapearAso(ResultSet rs) throws SQLException {
+
+        Aso aso = new Aso();
+
+        aso.setIdAso(rs.getLong("id_aso"));
+        aso.setDataEmissao(
+                rs.getDate("data_emissao").toLocalDate());
+
+        aso.setDataVencimento(
+                rs.getDate("data_vencimento").toLocalDate());
+
+        aso.setTipoAso(rs.getString("tipo_aso"));
+        aso.setResultado(rs.getString("resultado"));
+        aso.setIdColaborador(rs.getLong("id_colaborador"));
+        aso.setIdMedico(rs.getLong("id_medico"));
+
+        return aso;
     }
 }
