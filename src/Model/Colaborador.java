@@ -12,6 +12,8 @@ public class Colaborador {
     private String status;
     private Long idEmpresa;
     private Long idCargo;
+    private String nomeEmpresa;
+    private String nomeCargo;
 
     public Colaborador(Long idColaborador, String nome, String cpf) {
 
@@ -101,4 +103,21 @@ public class Colaborador {
     public void setIdCargo(Long idCargo) {
         this.idCargo = idCargo;
     }
+
+    public String getNomeEmpresa() {
+        return nomeEmpresa;
+    }
+
+    public void setNomeEmpresa(String nomeEmpresa) {
+        this.nomeEmpresa = nomeEmpresa;
+    }
+
+    public String getNomeCargo() {
+        return nomeCargo;
+    }
+
+    public void setNomeCargo(String nomeCargo) {
+        this.nomeCargo = nomeCargo;
+    }
 }
+

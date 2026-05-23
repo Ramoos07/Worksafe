@@ -148,28 +148,65 @@ public class ColaboradorDAO {
 
     public List<Colaborador> listarTodos() {
 
-        List<Colaborador> lista = new ArrayList<>();
+        List<Colaborador> lista =
+                new ArrayList<>();
 
-        String sql =
-                "SELECT id_colaborador, nome, cpf FROM colaborador";
+        String sql = """
+            SELECT
+                c.id_colaborador,
+                c.nome,
+                c.cpf,
+                c.status,
+                e.razao_social,
+                ca.nome_cargo
+            FROM colaborador c
+            INNER JOIN empresa e
+                ON c.id_empresa = e.id_empresa
+            INNER JOIN cargo ca
+                ON c.id_cargo = ca.id_cargo
+            """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (
+                PreparedStatement stmt =
+                        connection.prepareStatement(sql);
+
+                ResultSet rs =
+                        stmt.executeQuery()
+        ) {
 
             while (rs.next()) {
 
-                Colaborador colaborador = new Colaborador();
+                Colaborador colaborador =
+                        new Colaborador();
 
-                colaborador.setIdColaborador(rs.getLong("id_colaborador"));
-                colaborador.setNome(rs.getString("nome"));
-                colaborador.setCpf(rs.getString("cpf"));
+                colaborador.setIdColaborador(
+                        rs.getLong("id_colaborador"));
+
+                colaborador.setNome(
+                        rs.getString("nome"));
+
+                colaborador.setCpf(
+                        rs.getString("cpf"));
+
+                colaborador.setStatus(
+                        rs.getString("status"));
+
+                colaborador.setNomeEmpresa(
+                        rs.getString("razao_social"));
+
+                colaborador.setNomeCargo(
+                        rs.getString("nome_cargo"));
+
                 lista.add(colaborador);
             }
 
         } catch (SQLException e) {
 
-            throw new RuntimeException("Erro ao listar colaboradores: "+ e.getMessage(), e);
+            throw new RuntimeException(
+                    "Erro ao listar colaboradores: "
+                            + e.getMessage());
         }
+
         return lista;
     }
 
