@@ -54,7 +54,7 @@ public class AsoService {
     }
 
     //Function
-    public String verificarStatusAso( String cpf) {
+    public String verificarStatusAso(String cpf) {
         return asoDAO.verificarStatusAso(cpf);
     }
 
