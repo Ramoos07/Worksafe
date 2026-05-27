@@ -214,4 +214,18 @@ public class ColaboradorDAO {
         colaborador.setIdCargo(rs.getLong("id_cargo"));
         return colaborador;
     }
+
+    // Método que vai chamar a Procedure lá no Supabase/PostgreSQL
+    public void inativarColaboradoresComAsoVencido() {
+
+        String sql = "CALL atualizar_status_aso_vencido()";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.execute();
+            System.out.println("Rotina executada: Status dos colaboradores atualizados com sucesso!");
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao executar a rotina de ASOs vencidos: " + e.getMessage(), e);
+        }
+    }
 }
