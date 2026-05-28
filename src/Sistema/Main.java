@@ -53,7 +53,6 @@ public class Main {
             System.out.println("3 - Módulo de Exames");
             System.out.println("0 - Sair do Sistema");
             System.out.print("\nEscolha um módulo: ");
-
             opcaoPrincipal = scanner.nextInt();
             scanner.nextLine();
 
