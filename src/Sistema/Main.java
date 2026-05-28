@@ -41,14 +41,56 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
+        int opcaoPrincipal = -1;
+
+        while (opcaoPrincipal != 0) {
+
+            System.out.println("\n=================================");
+            System.out.println("    WorkSafe - Menu Principal");
+            System.out.println("=================================");
+            System.out.println("1 - Módulo de Colaboradores");
+            System.out.println("2 - Módulo de ASOs");
+            System.out.println("3 - Módulo de Exames");
+            System.out.println("0 - Sair do Sistema");
+            System.out.print("\nEscolha um módulo: ");
+
+            opcaoPrincipal = scanner.nextInt();
+            scanner.nextLine();
+
+            try {
+                switch (opcaoPrincipal) {
+                    case 1 -> menuColaboradores(scanner);
+                    case 2 -> menuAsos(scanner);
+                    case 3 -> menuExames(scanner);
+                    case 0 -> System.out.println("\nSistema encerrado.");
+                    default -> System.out.println("\nOpção inválida.");
+                }
+            } catch (Exception e) {
+                System.out.println("\nERRO: " + e.getMessage());
+            }
+        }
+        scanner.close();
+    }
+
+    private static void menuColaboradores(Scanner scanner) {
 
         int opcao = -1;
 
         while (opcao != 0) {
 
-            exibirMenu();
+            System.out.println("\n--- Módulo de Colaboradores ---");
+
+            System.out.println("1 - Inserir colaborador");
+            System.out.println("2 - Listar colaboradores");
+            System.out.println("3 - Buscar colaborador por CPF");
+            System.out.println("4 - Atualizar status");
+            System.out.println("5 - Deletar colaborador");
+            System.out.println("6 - Relatório completo");
+            System.out.println("7 - Inativar colaboradores com ASO vencido");
+            System.out.println("0 - Voltar ao Menu Principal");
 
             System.out.print("\nEscolha uma opção: ");
+
             opcao = scanner.nextInt();
             scanner.nextLine();
 
@@ -68,32 +110,86 @@ public class Main {
 
                     case 6 -> relatorioCompleto();
 
-                    case 7 -> inserirAso(scanner);
+                    case 7 -> inativarColaboradoresAsoVencido();
 
-                    case 8 -> listarAsos();
+                    case 0 ->
+                            System.out.println(
+                                    "\nVoltando ao Menu Principal..."
+                            );
 
-                    case 9 -> buscarAso(scanner);
-
-                    case 10 -> atualizarResultado(scanner);
-
-                    case 11 -> deletarAso(scanner);
-
-                    case 12 -> verificarStatusAso(scanner);
-
-                    case 13 -> listarExames(scanner);
-
-                    case 0 -> System.out.println("\nSistema encerrado.");
-
-                    default -> System.out.println("\nOpção inválida.");
+                    default ->
+                            System.out.println(
+                                    "\nOpção inválida."
+                            );
                 }
+
+            } catch (IllegalArgumentException e) {
+
+                System.out.println(
+                        "\nErro de validação: "
+                                + e.getMessage());
+
+            } catch (RuntimeException e) {
+
+                System.out.println(
+                        "\nErro de execução: "
+                                + e.getMessage());
 
             } catch (Exception e) {
 
-                System.out.println("\nERRO: " + e.getMessage());
+                System.out.println(
+                        "\nErro inesperado: "
+                                + e.getMessage());
             }
         }
+    }
 
-        scanner.close();
+    private static void menuAsos(Scanner scanner) {
+        int opcao = -1;
+        while (opcao != 0) {
+            System.out.println("\n--- Módulo de ASOs ---");
+            System.out.println("1 - Inserir ASO");
+            System.out.println("2 - Listar ASOs");
+            System.out.println("3 - Buscar ASO por ID");
+            System.out.println("4 - Atualizar resultado ASO");
+            System.out.println("5 - Deletar ASO");
+            System.out.println("6 - Verificar status ASO");
+            System.out.println("0 - Voltar ao Menu Principal");
+            System.out.print("\nEscolha uma opção: ");
+
+            opcao = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcao) {
+                case 1 -> inserirAso(scanner);
+                case 2 -> listarAsos();
+                case 3 -> buscarAso(scanner);
+                case 4 -> atualizarResultado(scanner);
+                case 5 -> deletarAso(scanner);
+                case 6 -> verificarStatusAso(scanner);
+                case 0 -> System.out.println("\nVoltando ao Menu Principal...");
+                default -> System.out.println("\nOpção inválida.");
+            }
+        }
+    }
+
+    private static void menuExames(Scanner scanner) {
+        int opcao = -1;
+        while (opcao != 0) {
+            System.out.println("\n--- Módulo de Exames ---");
+            System.out.println("1 - Listar exames de um ASO");
+            System.out.println("0 - Voltar ao Menu Principal");
+            System.out.print("\nEscolha uma opção: ");
+
+            opcao = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcao) {
+                case 1 -> listarExames(scanner);
+                case 0 -> System.out.println("\nVoltando ao Menu Principal...");
+                default -> System.out.println("\nOpção inválida.");
+            }
+        }
     }
 
     private static void exibirMenu() {
@@ -155,6 +251,18 @@ public class Main {
         colaboradorService.inserir(colaborador);
 
         System.out.println("\nColaborador cadastrado!");
+    }
+
+    private static void inativarColaboradoresAsoVencido() {
+
+        System.out.println(
+                "\n===== ROTINA ASO VENCIDO ====="
+        );
+
+        colaboradorService.inativarColaboradoresComAsoVencido();
+
+        System.out.println("\nColaboradores com ASO vencido " + "foram inativados com sucesso!"
+        );
     }
 
     private static void selecionarEmpresa(Scanner scanner,Colaborador colaborador) {

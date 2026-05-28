@@ -66,4 +66,11 @@ public class ColaboradorService {
                             + "ativo, inativo ou afastado.");
         }
     }
+
+    //Procedure
+    public void inativarColaboradoresComAsoVencido() {
+
+        colaboradorDAO
+                .inativarColaboradoresComAsoVencido();
+    }
 }
